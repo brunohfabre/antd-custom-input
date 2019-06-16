@@ -1,0 +1,7 @@
+@import "~antd/dist/antd.css";
+
+body,
+#root,
+.ant-layout {
+  height: 100%;
+}
