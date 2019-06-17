@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles.css";
 import { Layout, Row, Col, Form } from "antd";
 
 import CustomInput from "./CustomInput";
 
 function App({ form }) {
-  const { Header, Footer, Sider, Content } = Layout;
+  const [formValue, setFormValue] = useState();
+
+  const { Header, Sider, Content } = Layout;
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -48,6 +50,7 @@ function App({ form }) {
                     { required: true, message: "Este campo é obrigatório!" }
                   ]}
                   mask="date"
+                  inputValue={formValue}
                 />
 
                 <CustomInput
@@ -58,6 +61,7 @@ function App({ form }) {
                     { required: true, message: "Este campo é obrigatório!" }
                   ]}
                   mask="telephone"
+                  inputValue={formValue}
                 />
 
                 <CustomInput
@@ -72,11 +76,20 @@ function App({ form }) {
 
                 <button type="submit">teste</button>
               </Form>
+
+              <button
+                onClick={() =>
+                  setFormValue({
+                    date: "21062000",
+                    telephone: "18997812225"
+                  })
+                }
+              >
+                formulario
+              </button>
             </Col>
           </Row>
         </Content>
-
-        <Footer>footer</Footer>
       </Layout>
     </Layout>
   );

@@ -8,78 +8,71 @@ export default function CustomInput({
   rules,
   placeholder,
   mask,
-  type
+  type,
+  maxLength,
+  inputValue = null
 }) {
   const { getFieldDecorator } = form;
 
-  function options() {
-    if (mask) {
+  function selectMaskType(value) {
+    if (value && mask) {
       switch (mask) {
         case "money":
-          return {
-            normalize: value => VMasker.toMoney(value ? value : ""),
-            rules
-          };
+          return VMasker.toMoney(value);
         case "date":
-          return {
-            normalize: value =>
-              VMasker.toPattern(value ? value : "", "99/99/9999"),
-            rules
-          };
+          return VMasker.toPattern(value, "99/99/9999");
         case "zipCode":
-          return {
-            normalize: value =>
-              VMasker.toPattern(value ? value : "", "99999-999"),
-            rules
-          };
+          return VMasker.toPattern(value, "99999-999");
         case "rg":
-          return {
-            normalize: value =>
-              VMasker.toPattern(value ? value : "", "99.999.999-9"),
-            rules
-          };
+          return VMasker.toPattern(value, "99.999.999-9");
         case "cpf":
-          return {
-            normalize: value =>
-              VMasker.toPattern(value ? value : "", "999.999.999-99"),
-            rules
-          };
+          return VMasker.toPattern(value, "999.999.999-99");
         case "cnpj":
-          return {
-            normalize: value =>
-              VMasker.toPattern(value ? value : "", "99.999.999/9999-99"),
-            rules
-          };
+          return VMasker.toPattern(value, "99.999.999/9999-99");
         case "verificationCode":
-          return {
-            normalize: value => VMasker.toPattern(value ? value : "", "999999"),
-            rules
-          };
+          return VMasker.toPattern(value, "999999");
         case "telephone":
-          return {
-            getValueFromEvent: e => {
-              if (e.target.value.length <= 14) {
-                return VMasker.toPattern(
-                  e.target.value ? e.target.value : "",
-                  "(99) 9999-9999"
-                );
-              }
-              if (e.target.value.length === 15) {
-                return VMasker.toPattern(
-                  e.target.value ? e.target.value : "",
-                  "(99) 99999-9999"
-                );
-              }
-            },
-            rules
-          };
-
+          if (value && value.length <= 10) {
+            return VMasker.toPattern(value, "(99) 9999-9999");
+          }
+          if (value && value.length >= 11) {
+            return VMasker.toPattern(value, "(99) 99999-9999");
+          }
+          break;
         default:
-          return {
-            normalize: value => VMasker.toPattern(value ? value : "", mask),
-            rules
-          };
+          return VMasker.toPattern(value, mask);
       }
+    }
+
+    return value;
+  }
+
+  function options() {
+    if (mask === "telephone") {
+      return {
+        initialValue: selectMaskType(inputValue && inputValue[name]),
+        getValueFromEvent: e => {
+          if (e.target.value.length <= 14) {
+            return VMasker.toPattern(
+              e.target.value ? e.target.value : "",
+              "(99) 9999-9999"
+            );
+          }
+          if (e.target.value.length >= 15) {
+            return VMasker.toPattern(
+              e.target.value ? e.target.value : "",
+              "(99) 99999-9999"
+            );
+          }
+        },
+        rules
+      };
+    } else {
+      return {
+        initialValue: selectMaskType(inputValue && inputValue[name]),
+        normalize: value => selectMaskType(value),
+        rules
+      };
     }
 
     return { rules };
@@ -88,9 +81,17 @@ export default function CustomInput({
   function renderInput() {
     switch (type) {
       case "password":
-        return <Input.Password placeholder={placeholder} size="large" />;
+        return (
+          <Input.Password
+            placeholder={placeholder}
+            size="large"
+            maxLength={maxLength}
+          />
+        );
       default:
-        return <Input placeholder={placeholder} size="large" />;
+        return (
+          <Input placeholder={placeholder} size="large" maxLength={maxLength} />
+        );
     }
   }
 
