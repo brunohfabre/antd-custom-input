@@ -74,6 +74,22 @@ function App({ form }) {
                   type="password"
                 />
 
+                <CustomInput
+                  name="search"
+                  form={form}
+                  placeholder="Pesquisar..."
+                  rules={[]}
+                  type="search"
+                />
+
+                <CustomInput
+                  name="text"
+                  form={form}
+                  placeholder="Lorem..."
+                  rules={[]}
+                  type="textarea"
+                />
+
                 <button type="submit">teste</button>
               </Form>
 

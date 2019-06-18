@@ -13,6 +13,7 @@ export default function CustomInput({
   inputValue = null
 }) {
   const { getFieldDecorator } = form;
+  const { Password, Search, TextArea } = Input;
 
   function selectMaskType(value) {
     if (value && mask) {
@@ -82,10 +83,26 @@ export default function CustomInput({
     switch (type) {
       case "password":
         return (
-          <Input.Password
+          <Password
             placeholder={placeholder}
             size="large"
             maxLength={maxLength}
+          />
+        );
+      case "search":
+        return (
+          <Search
+            placeholder={placeholder}
+            size="large"
+            maxLength={maxLength}
+          />
+        );
+      case "textarea":
+        return (
+          <TextArea
+            placeholder={placeholder}
+            autosize={{ minRows: 3 }}
+            size="large"
           />
         );
       default:
